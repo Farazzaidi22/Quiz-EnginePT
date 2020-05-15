@@ -71,7 +71,6 @@
     <Compile Include="Assets\Scripts\Move.cs" />
     <Compile Include="Assets\Scripts\Parallex.cs" />
     <Compile Include="Assets\Scripts\QnA_json.cs" />
-    <Compile Include="Assets\Scripts\temp.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>F:/UNITY/_Office work/Sample Quiz Engine/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
