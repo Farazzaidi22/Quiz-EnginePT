@@ -5,6 +5,8 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 
 //public class QnA_json : MonoBehaviour
@@ -165,6 +167,8 @@ public class QnA_json : MonoBehaviour
     int qCounter = 0;
     public Button[] b;
 
+   // bool press = false;
+
     public GameObject Wrong_Panel;
     public GameObject Correct_Panel;
     public GameObject Welcome_Panel;
@@ -188,7 +192,6 @@ public class QnA_json : MonoBehaviour
 
         StartQuestionRoutine(c1, n);
 
-
         Invoke("disableWelcome", 3.0f);
         //ChangeButton();
 
@@ -208,18 +211,30 @@ public class QnA_json : MonoBehaviour
     }
 
     string amil;
+
     //for changing questions
     IEnumerator QuestionRoutin(Course c, int n)
     {
         while(qCounter < n)
         {
-            yield return new WaitForSeconds(3.0f);
+            //if(press)
+            //{
+            //    yield return new WaitForSeconds(0.1f);
+            //}
+            //else
+            //{
+                yield return new WaitForSeconds(3.0f);
+            //}
+
             Question.text = c.Ques_Data[qCounter].Quesion;
 
-            for (int i = 0; i < b.Length ; i++)
-            {
-                b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
-            }
+            //for (int i = 0; i < b.Length ; i++)
+            //{
+            //    b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
+            //}
+
+            print(qCounter);
+            RandomButton(c, qCounter);
 
             //b[3].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].Answer;
             amil = c.Ques_Data[qCounter].Answer;
@@ -228,17 +243,61 @@ public class QnA_json : MonoBehaviour
         }
     }
 
-    public void ChangeButton()
-    {
-        for(int i =0; i < b.Length; i++)
-        {
-            b[i].name = "option" + i;
-        }
-    }
+    //int[] check = new int[3];
+    ArrayList check = new ArrayList();
+    int count = 0;
+    int t;
 
+    public void RandomButton(Course c, int qCounter)
+    {
+        print("rand" + qCounter);
+        while (count <= b.Length -1)
+        {
+            t = UnityEngine.Random.Range(0, 4);
+            //print("t:" + t);
+            if (count == 0)
+            {
+                //print(count);
+                check.Add(t);
+                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[t];
+                print(c.Ques_Data[qCounter].options[t]);
+                count++;
+               // print(count);
+            }
+
+            else if(check.Contains(t) == false)
+            {
+                //print("else if wala: " + count);
+                check.Add(t);
+                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[t];
+                print(c.Ques_Data[qCounter].options[t]);
+                count++;
+            }
+            else
+            {
+                Debug.Log("masla ha");
+            }
+        }
+        print(count);
+        print(b.Length);
+        if (count == b.Length)
+        {
+            count = 0;
+            print("amil");
+            print(check);
+            check.Clear();
+        }
+
+
+        //for (int i = 0; i < b.Length; i++)
+        //{
+        //    b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
+        //}
+    }
 
     public void CheckAnswer(Text button_txt)
     {
+       // press = true;
         if (button_txt.text == amil)
         {
             print("Chal gaya bc");
@@ -251,6 +310,8 @@ public class QnA_json : MonoBehaviour
                 anim.SetBool("isRightAnsPressed", !isRightAnsPressed);
                 Invoke("disableCorrectPanel", 1.0f);
             }
+
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
@@ -262,6 +323,7 @@ public class QnA_json : MonoBehaviour
                 anim.SetBool("isPressed", !isPressed);
                 Invoke("disableWrongPanel", 1.0f);
             }
+           // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 
@@ -280,6 +342,7 @@ public class QnA_json : MonoBehaviour
         Welcome_Panel.SetActive(false);
     }
 
+    //not ready to use functions
     public void SetRandom(Course c)
     {
         int[] check = new int[3];
@@ -324,7 +387,7 @@ public class QnA_json : MonoBehaviour
         }
     }
 
-    public static bool IntArrayLinearSearch(int[] data, int item)
+    public bool IntArrayLinearSearch(int[] data, int item)
     {
         int N = data.Length;
         for (int i = 0; i < N; i++)
@@ -339,6 +402,15 @@ public class QnA_json : MonoBehaviour
         if (!randomList.Contains(MyNumber))
             randomList.Add(MyNumber);
         print("randome list: " + MyNumber);
+    }
+
+
+    public void ChangeButton()
+    {
+        for (int i = 0; i < b.Length; i++)
+        {
+            b[i].name = "option" + i;
+        }
     }
 
     [Serializable]
