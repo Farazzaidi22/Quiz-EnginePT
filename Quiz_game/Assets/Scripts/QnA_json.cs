@@ -32,6 +32,8 @@ public class QnA_json : MonoBehaviour
 
     Course c1;
     int n;
+    List<QnA> quesAns = new List<QnA>();
+    ArrayList checkr = new ArrayList();
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +44,19 @@ public class QnA_json : MonoBehaviour
         //Course c1 = JsonUtility.FromJson<Course>(json);
         n = int.Parse(c1.No_Of_Ques);
 
+        LoadQuestions(c1, n, 3);
 
-        StartQuestionRoutine(c1, n, time_1);
+        //for (int j = 0; j < 3; j++)
+        //{
+        //    print(quesAns[j].Quesion);
+        //    print(quesAns[j].Answer);
+        //    print(quesAns[j].options[j]);
+        //}
 
+        //StartQuestionRoutine(c1, n, time_1);
         Invoke("disableWelcome", 3.0f);
+        StartCoroutine(QuestionRoutin(quesAns, time_1));
+
 
     }
 
@@ -57,31 +68,73 @@ public class QnA_json : MonoBehaviour
         return c1;
     }
 
-    public void StartQuestionRoutine(Course c, int n, float t)
+
+    public void LoadQuestions(Course c1, int n, int no_Of_ques)
     {
-        StartCoroutine(QuestionRoutin(c, n, t));
+        int i = 0;
+        int r;
+        if (no_Of_ques <= n)
+        {
+            while (i < no_Of_ques)
+            {
+                r = UnityEngine.Random.Range(0, no_Of_ques);
+                if (i == 0 && quesAns.Count == 0)
+                {
+                    checkr.Add(r);
+                    quesAns.Add(c1.Ques_Data[r]);
+                    i++;
+                }
+                else if (checkr.Contains(r) == false)
+                {
+                    checkr.Add(r);
+                    quesAns.Add(c1.Ques_Data[r]);
+                    i++;
+                }
+                else
+                {
+                    print("same random no is regenerated again");
+                }
+            }
+        }
+        else
+        {
+            print("No of required questions is greater than no of questions present");
+        }
     }
+
+    //public void StartQuestionRoutine(Course c, int n, float t)
+    //{
+        //StartCoroutine(QuestionRoutin(c, n, t));
+    //}
 
     string amil;
 
     //for changing questions
-    IEnumerator QuestionRoutin(Course c, int n, float t)
+    IEnumerator QuestionRoutin(List<QnA> qA, float t)
     {
-        while(qCounter < n)
+        while(qCounter < qA.Count)
         {
 
-            Question.text = c.Ques_Data[qCounter].Quesion;
-            RandomButton(c, qCounter);
+            Question.text = qA[qCounter].Quesion;
+            RandomButton(qA, qCounter);
 
-            amil = c.Ques_Data[qCounter].Answer;
-
+            amil = qA[qCounter].Answer;
             qCounter++;
+
             yield return new WaitForSeconds(t);
+
+            //Question.text = c.Ques_Data[qCounter].Quesion;
+            //RandomButton(c, qCounter);
+
+            //amil = c.Ques_Data[qCounter].Answer;
+
+            //qCounter++;
+            //yield return new WaitForSeconds(t);
         }
     }
 
 
-    public void RandomButton(Course c, int qCounter)
+    public void RandomButton(List<QnA> qA, int qCounter)
     {
         while (count <= b.Length -1)
         {
@@ -90,14 +143,16 @@ public class QnA_json : MonoBehaviour
             if (count == 0)
             {
                 check.Add(rand_gen);
-                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                //b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                b[count].GetComponentInChildren<Text>().text = qA[qCounter].options[rand_gen];
                 count++;
             }
 
             else if(check.Contains(rand_gen) == false)
             {
                 check.Add(rand_gen);
-                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                //b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                b[count].GetComponentInChildren<Text>().text = qA[qCounter].options[rand_gen];
                 count++;
             }
             else
@@ -131,7 +186,7 @@ public class QnA_json : MonoBehaviour
                 bool isRightAnsPressed = anim.GetBool("isRightAnsPressed");
                 anim.SetBool("isRightAnsPressed", !isRightAnsPressed);
                 Invoke("disableCorrectPanel", 1.0f);
-                StartQuestionRoutine(c1, n, 1.0f);
+                //StartQuestionRoutine(c1, n, 1.0f);
             }
         }
         else
