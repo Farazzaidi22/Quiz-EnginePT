@@ -1,15 +1,34 @@
 {
 	"CourseName":"Science",
-	"No_Of_Ques":2,
+	"No_Of_Ques":6,
 	"Ques_Data":[
 				  { "Quesion":"which is the biggest planet in the solar system?",
 				    "Answer":"jupiter",
-				    "options":["mars","earth","venus"] 
+				    "options":["mars","jupiter","earth","venus"] 
 				  },
 				 
 				  { "Quesion":"How many planets are there in solar system?",
 				    "Answer":"Eight",
-				    "options":["Seven","Nine","Five"] 
+				    "options":["Eight","Seven","Nine","Five"] 
+				  },
+				  { "Quesion":"which planet is closest to sun? ",
+				    "Answer":"mercury",
+				    "options":["mercury","saturn","uranas","neptune"] 
+				  },
+
+				  { "Quesion":"How many number of electorns does nitrogen have?",
+				    "Answer":"7",
+				    "options":["10","8","7","11"] 
+				  },
+
+				  { "Quesion":"what force keeps the moon in orbit around the earth",
+				    "Answer":"gravitational pull",
+				    "options":["couple","thermodynamics","inirtia","gravitational pull"] 
+				  },
+
+				  { "Quesion":"a^2 - 2ab + b^2 ",
+				    "Answer":"(a-b)^2",
+				    "options":["(a+b)^2","(a-b)^2","a^2+b^2","a^2-b^2"] 
 				  }
 				]	
 }

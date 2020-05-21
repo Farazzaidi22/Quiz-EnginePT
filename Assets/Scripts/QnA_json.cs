@@ -5,156 +5,8 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
-
-
-//public class QnA_json : MonoBehaviour
-//{
-//    public Text Question;
-//    public Text[] answers;
-//    string path;
-//    public Button[] b;
-//    Text a;
-//    //public GameObject aObject;
-
-
-//    private void Awake()
-//    {
-
-//    }
-
-//    // Start is called before the first frame update
-//    void Start()
-//    {
-//        /*a.text = b.GetComponentInChildren<Text>().text*/;
-//        //QnA q1 = new QnA(); 
-
-//        //string json = JsonUtility.ToJson(q1);
-//        //Debug.Log(json);
-//        //File.WriteAllText(Application.dataPath + "/QnA.json", json);
-
-//        path = Application.dataPath + "/QnA.json";
-//        string json = File.ReadAllText(path);
-//        QnA q1 = JsonUtility.FromJson<QnA>(json);
-//        Question.text = q1.Quesion;
-//        string te = q1.Answer;
-//        print(te);
-//        CheckAnswer(te);
-//        //int t = Random.Range(0, 3);
-
-//        //answers[t].text = q1.Answer;
-
-//        //int[] check = new int[3];
-
-//        //for (int i = 0; i < check.Length ; i++)
-//        //{
-//        //    //if(i  ==  t)
-//        //    //{
-//        //    //    Debug.Log("i: "+i);
-//        //    //    Debug.Log("t: "+t);
-//        //    //    answers[i + 1].text = q1.options[i];
-//        //    //}
-//        //    //else
-//        //    //{
-//        //    //    answers[i].text = q1.options[i];
-//        //    //    Debug.Log("amil");
-//        //    //}
-
-//        //    int t = Random.Range(0, 3);
-//        //    answers[t].text = q1.Answer;
-
-//        //    if (check[i] == t)
-//        //    {
-
-//        //    }
-//        //}
-
-//        //Debug.Log(q1.Quesion);
-//        //Debug.Log(q1.Answer);
-//        //Debug.Log(q1.options[0]);
-
-
-//        int[] check = new int[3];
-//        int i = 0;
-//        int count = 0;
-
-//        while (i <= 3)
-//        {
-//            int t = Random.Range(0, 4);
-//            //Debug.Log(t);
-
-//            if (i == 0)
-//            {
-//                answers[t].text = q1.Answer;
-//                check[i] = t;
-//               // Debug.Log("first: " + check[i]);
-//                i++;
-//                //count++;
-//            }
-//            else
-//            {
-//                if (!IntArrayLinearSearch(check, t))
-//                {
-//                    answers[t].text = q1.options[i - 1];
-//                    check[i] = t;
-//                    //Debug.Log("so on: " + check[i]);
-//                    i++;
-//                    //count++;
-//                }
-//                else
-//                {
-//                    //Debug.Log("Amil");
-//                }
-//            }
-
-
-//            //Debug.Log("Amil1");
-//            ////i++;
-//            //Debug.Log("i++: " + i);
-//        }
-//    }
-
-//    public static bool IntArrayLinearSearch(int[] data, int item)
-//    {
-//        int N = data.Length;
-//        for (int i = 0; i < N; i++)
-//            if (data[i] == item)
-//                return true;
-//        return false;
-//    }
-
-//    public void CheckAnswer(string q1)
-//    {
-//        print(q1);
-//        for(int i =0; i< b.Length; i++)
-//        {
-//            if (q1 == b[i].GetComponentInChildren<Text>().text)
-//            {
-//                Debug.Log("Correct Answer");
-//            }
-//            else
-//            {
-//                Debug.Log("Wrong Answer");
-//                break;
-//            }
-//        }
-//        print("bhir agaye loop se");
-//    }
-
-
-//    public class QnA
-//    {
-//        public string Quesion;
-//        public string Answer;
-//        public string[] options;
-//    }
-
-//    //private class Course
-//    //{
-//    //    public string CourseName;
-//    //    public string No_Of_Ques;
-//    //    public QnA[] Ques_Data;
-//    //}
-//}
+using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 
 public class QnA_json : MonoBehaviour
@@ -163,32 +15,49 @@ public class QnA_json : MonoBehaviour
     public Text[] answers;
     string path;
     int qCounter = 0;
+    int rightAnswerCount = 0;
+    int wrongAnswersCount = 0;
     public Button[] b;
+    int time_1 = 10;
+    bool flag = false;
+    ArrayList check = new ArrayList();
+    int count = 0;
+    int rand_gen;
 
+    public Text score;
+
+    public Text rightAnswers;
+    public Text wrongAnswers;
+    int score_value = 0;
+
+    public Text finalScore;
+
+    // bool press = false;
+    Coroutine co;
     public GameObject Wrong_Panel;
     public GameObject Correct_Panel;
     public GameObject Welcome_Panel;
+    public GameObject gameOverPanel;
 
 
-    public System.Random a = new System.Random(); // replace from new Random(DateTime.Now.Ticks.GetHashCode());
-                                                 // Since similar code is done in default constructor internally
-    public List<int> randomList = new List<int>();
-    int MyNumber = 0;
-
+    Course c1;
+    int n;
 
     // Start is called before the first frame update
     void Start()
     {
+        c1 = MakeJson();
+        //path = Application.dataPath + "/QnA.json";
+        //string json = File.ReadAllText(path);
+        //Course c1 = JsonUtility.FromJson<Course>(json);
+        n = int.Parse(c1.No_Of_Ques);
 
-        path = Application.dataPath + "/QnA.json";
-        string json = File.ReadAllText(path);
-        Course c1 = JsonUtility.FromJson<Course>(json);
-        int n = int.Parse(c1.No_Of_Ques);
 
+        //StartQuestionRoutine(c1, n, time_1);
 
-        StartQuestionRoutine(c1, n);
+        co = StartCoroutine(QuestionRoutin(c1, n, time_1));
 
-        //ChangeButton();
+        Invoke("disableWelcome", 3.0f);
 
     }
 
@@ -200,55 +69,164 @@ public class QnA_json : MonoBehaviour
         return c1;
     }
 
-    public void StartQuestionRoutine(Course c, int n)
+    public void StartQuestionRoutine(Course c, int n, int t)
     {
-        StartCoroutine(QuestionRoutin(c, n));
+        co = StartCoroutine(QuestionRoutin(c, n, t));
     }
 
     string amil;
-    //for changing questions
-    IEnumerator QuestionRoutin(Course c, int n)
-    {
-        while(qCounter < n)
-        {
-            yield return new WaitForSeconds(3.0f);
-            Question.text = c.Ques_Data[qCounter].Quesion;
+    int r = 0;
+    ArrayList checkq = new ArrayList();
+    int countq = 0;
 
-            for (int i = 0; i < b.Length -1 ; i++)
+    //for changing questions
+    IEnumerator QuestionRoutin(Course c, int n, int ti)
+    {
+        while (qCounter < 6)
+        {
+
+            print(qCounter);
+            r = UnityEngine.Random.Range(0, 6);
+            //Question.text = c.Ques_Data[r].Quesion;
+            //RandomButton(c, r);
+            //amil = c.Ques_Data[r].Answer;
+
+            if (checkq.Count == 0)
             {
-                b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
+
+                checkq.Add(r);
+                Question.text = c.Ques_Data[r].Quesion;
+                RandomButton(c, r);
+                amil = c.Ques_Data[r].Answer;
+                qCounter++;
+
+
+            }
+            else if (checkq.Contains(r) == false)
+            {
+
+                checkq.Add(r);
+                Question.text = c.Ques_Data[r].Quesion;
+                RandomButton(c, r);
+                amil = c.Ques_Data[r].Answer;
+
+                qCounter++;
+
+            }
+            else
+            {
+
+               continue;
+            }
+            if (ti < 10)
+            {
+                //flag = false;
+                ti = 10;
+                yield return new WaitForSeconds(ti);
+               //qCounter++;
+            //StartQuestionRoutine(c1, n, 10);
+        }
+            else
+            {
+                //qCounter++;
+                yield return new WaitForSeconds(ti);
+                 //qCounter++;
+
             }
 
-            b[3].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].Answer;
-            amil = c.Ques_Data[qCounter].Answer;
+            //if (f == true)
+            //{
+            //    qCounter++;
+            //    f = false;
 
-            qCounter++;
+            //    qCounter++;
+            //    yield return new WaitForSeconds(1.0f);
+
+
+            //}
+            //else
+            //{
+
+            //    yield return new WaitForSeconds(10);
+            //    qCounter++;
+            //}
+            //qCounter++;
         }
+
+        finishRoutine();
+           
+
     }
 
-    public void ChangeButton()
+
+    public void RandomButton(Course c, int qCounter)
     {
-        for(int i =0; i < b.Length; i++)
+        while (count <= b.Length - 1)
         {
-            b[i].name = "option" + i;
+            rand_gen = UnityEngine.Random.Range(0, 4);
+
+            if (count == 0)
+            {
+                check.Add(rand_gen);
+                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                count++;
+            }
+
+            else if (check.Contains(rand_gen) == false)
+            {
+                check.Add(rand_gen);
+                b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
+                count++;
+            }
+            else
+            {
+                Debug.Log("masla ha");
+            }
         }
+
+        if (count == b.Length)
+        {
+            count = 0;
+            check.Clear();
+        }
+
+        //for hardcoded buttons
+
+        //for (int i = 0; i < b.Length; i++)
+        //{
+        //    b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
+        //}
     }
 
-
-    public void CheckAnswer()
+    public void CheckAnswer(Text button_txt)
     {
-        if (EventSystem.current.currentSelectedGameObject.name == "Button (3)")
+        //time_1 = 10.0f;
+        if (button_txt.text == amil)
         {
-            print("Chal gaya bc");
+            flag = true;
 
             Animator anim = Correct_Panel.GetComponentInChildren<Animator>();
             if (anim != null)
             {
+
                 Correct_Panel.SetActive(true);
                 bool isRightAnsPressed = anim.GetBool("isRightAnsPressed");
                 anim.SetBool("isRightAnsPressed", !isRightAnsPressed);
                 Invoke("disableCorrectPanel", 1.0f);
+                score_value = score_value + 10;
+                score.text = "Score: " + score_value;
+
+                //  StartQuestionRoutine(c1, n, 1);
+                rightAnswerCount++;
+               StopCoroutine(co);
+                print("stoped");
+               StartQuestionRoutine(c1, n, 10);
+                //qCounter++;
+                // flag = true;
+
             }
+
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
@@ -259,7 +237,15 @@ public class QnA_json : MonoBehaviour
                 bool isPressed = anim.GetBool("isPressed");
                 anim.SetBool("isPressed", !isPressed);
                 Invoke("disableWrongPanel", 1.0f);
+                score_value = score_value - 5;
+                score.text = "Score: " + score_value;
+                wrongAnswersCount++;
+
+                StopCoroutine(co);
+                print("stoped");
+                StartQuestionRoutine(c1, n, 10);
             }
+            // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 
@@ -278,67 +264,27 @@ public class QnA_json : MonoBehaviour
         Welcome_Panel.SetActive(false);
     }
 
-    public void SetRandom(Course c)
+
+    public void ChangeButton()
     {
-        int[] check = new int[3];
-        int i = 0;
-        //int count = 0;
-
-        while (i <= 3)
+        for (int i = 0; i < b.Length; i++)
         {
-            int t = UnityEngine.Random.Range(0, 4);
-            Debug.Log(t);
-
-            if (i == 0)
-            {
-                //answers[t].text = q1.Answer;
-                answers[t].text = c.Ques_Data[i].Answer;
-                check[i] = t;
-                Debug.Log("first: " + check[i]);
-                i++;
-                //count++;
-            }
-            else
-            {
-                if (!IntArrayLinearSearch(check, t))
-                {
-                    answers[t].text = c.Ques_Data[i].options[i];
-                    //answers[t].text = q1.options[i - 1];
-                    check[i] = t;
-                    Debug.Log("so on: " + check[i]);
-                    i++;
-                    //count++;
-                }
-                else
-                {
-                    Debug.Log("Amil");
-                }
-            }
-
-
-            Debug.Log("Amil1");
-            //i++;
-            Debug.Log("i++: " + i);
+            b[i].name = "option" + i;
         }
     }
-
-    public static bool IntArrayLinearSearch(int[] data, int item)
+    public void finishRoutine()
     {
-        int N = data.Length;
-        for (int i = 0; i < N; i++)
-            if (data[i] == item)
-                return true;
-        return false;
+        gameOverPanel.SetActive(true);
+        print("game Ended");
+        finalScore.text = score_value.ToString();
+        rightAnswers.text = rightAnswerCount.ToString();
+        wrongAnswers.text = wrongAnswersCount.ToString();
+        Application.Quit();
     }
-
-    private void NewNumber()
+    public void replay()
     {
-        MyNumber = a.Next(0, 4);
-        if (!randomList.Contains(MyNumber))
-            randomList.Add(MyNumber);
-        print("randome list: " + MyNumber);
+        SceneManager.LoadScene("Demo_UI");
     }
-
     [Serializable]
     public class QnA
     {
