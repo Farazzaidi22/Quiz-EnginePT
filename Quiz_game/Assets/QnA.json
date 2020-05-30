@@ -1,25 +1,41 @@
 {
 	"CourseName":"Science",
-	"No_Of_Ques":4,
-	"Ques_Data":[
-				  { "Quesion":"which is the biggest planet in the solar system?",
+	"Total_no_Of_Ques":4,
+	"no_of_categories":2,
+	"categories":[
+			{
+				"category_name": "Astronomy",
+				"No_Of_Ques":2,
+				
+				"Ques_Data":[
+				  { "Question":"which is the biggest planet in the solar system?",
 				    "Answer":"jupiter",
 				    "options":["mars","earth","venus","jupiter"] 
 				  },
-				 
-				  { "Quesion":"How many planets are there in solar system?",
-				    "Answer":"Eight",
-				    "options":["Seven","Nine","Five","Eight"] 
-				  },
 
-				  { "Quesion":"which is the closest planet to the sun?",
-				    "Answer":"mercury",
-				    "options":["mars","saturn","venus","mercury"] 
-				  },
-
-				  { "Quesion":"How many mooons does jupiter have?",
+				  { "Question":"How many moons does jupiter have?",
 				    "Answer":"12",
 				    "options":["5","13","9","12"] 
 				  }
-				]	
+				]
+	
+			},
+
+			{
+				"category_name": "Chemistry",
+				"No_Of_Ques":4,
+
+				"Ques_Data":[
+				  { "Question":"which element has atomic number 8??",
+				    "Answer":"oxygen",
+				    "options":["nitrogen","carbon","silicon","oxygen"] 
+				  },
+				 
+				  { "Question":"How many elements are their in periodic table?",
+				    "Answer":"118",
+				    "options":["98","85","100","118"] 
+				  }
+				]
+			}
+	]
 }

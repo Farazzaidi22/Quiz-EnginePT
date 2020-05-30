@@ -31,7 +31,9 @@ public class QnA_json : MonoBehaviour
 
 
     Course c1;
-    int n;
+    int Tn; //total no of questions
+    int Nc; //no of catagories
+
     List<QnA> quesAns = new List<QnA>();
     ArrayList checkr = new ArrayList();
 
@@ -39,24 +41,28 @@ public class QnA_json : MonoBehaviour
     void Start()
     {
         c1 = MakeJson();
-        //path = Application.dataPath + "/QnA.json";
-        //string json = File.ReadAllText(path);
-        //Course c1 = JsonUtility.FromJson<Course>(json);
-        n = int.Parse(c1.No_Of_Ques);
+     
+        Tn = int.Parse(c1.Total_no_Of_Ques);
+        Nc = int.Parse(c1.no_of_categories);
 
-        LoadQuestions(c1, n, 3);
+        Catagory choosen_cat = SearchForCatagory(c1, Nc, "Chemistry");
+        if(choosen_cat != null)
+        {
+            LoadQuestions(choosen_cat, Tn, 2);
+        }
 
-        //for (int j = 0; j < 3; j++)
-        //{
-        //    print(quesAns[j].Quesion);
-        //    print(quesAns[j].Answer);
-        //    print(quesAns[j].options[j]);
-        //}
+        //LoadQuestions(c1, Tn, 3);
+
+        for (int j = 0; j < 2; j++)
+        {
+            print(quesAns[j].Question);
+            print(quesAns[j].Answer);
+            print(quesAns[j].options[j]);
+        }
 
         //StartQuestionRoutine(c1, n, time_1);
         Invoke("disableWelcome", 3.0f);
         StartCoroutine(QuestionRoutin(quesAns, time_1));
-
 
     }
 
@@ -64,30 +70,48 @@ public class QnA_json : MonoBehaviour
     {
         path = Application.dataPath + "/QnA.json";
         string json = File.ReadAllText(path);
-        Course c1 = JsonUtility.FromJson<Course>(json);
-        return c1;
+        //print("here it is: " + myJSON);
+        Course c = JsonUtility.FromJson<Course>(json);
+        return c;
     }
 
+    public Catagory SearchForCatagory(Course c, int no_of_categories, string cat)
+    {
+        Catagory cat_obj;
 
-    public void LoadQuestions(Course c1, int n, int no_Of_ques)
+        for(int i = 0; i < no_of_categories; i++)
+        {
+            if(c.categories[i].category_name == cat)
+            {
+                cat_obj = c.categories[i];
+                return cat_obj;
+            }
+        }
+        return null;
+    }
+
+    //new one
+    public void LoadQuestions(Catagory choosen_cat, int Tn, int no_Of_ques_to_be_loaded)
     {
         int i = 0;
         int r;
-        if (no_Of_ques <= n)
+        int No_of_questons_in_cat = int.Parse(choosen_cat.No_Of_Ques); ;
+
+        if (no_Of_ques_to_be_loaded < Tn && no_Of_ques_to_be_loaded <= No_of_questons_in_cat)
         {
-            while (i < no_Of_ques)
+            while (i < no_Of_ques_to_be_loaded)
             {
-                r = UnityEngine.Random.Range(0, no_Of_ques);
+                r = UnityEngine.Random.Range(0, no_Of_ques_to_be_loaded);
                 if (i == 0 && quesAns.Count == 0)
                 {
                     checkr.Add(r);
-                    quesAns.Add(c1.Ques_Data[r]);
+                    quesAns.Add(choosen_cat.Ques_Data[r]);
                     i++;
                 }
                 else if (checkr.Contains(r) == false)
                 {
                     checkr.Add(r);
-                    quesAns.Add(c1.Ques_Data[r]);
+                    quesAns.Add(choosen_cat.Ques_Data[r]);
                     i++;
                 }
                 else
@@ -102,9 +126,43 @@ public class QnA_json : MonoBehaviour
         }
     }
 
+
+    //public void LoadQuestions(Course c1, int n, int no_Of_ques)
+    //{
+    //    int i = 0;
+    //    int r;
+    //    if (no_Of_ques <= n)
+    //    {
+    //        while (i < no_Of_ques)
+    //        {
+    //            r = UnityEngine.Random.Range(0, no_Of_ques);
+    //            if (i == 0 && quesAns.Count == 0)
+    //            {
+    //                checkr.Add(r);
+    //                quesAns.Add(c1.Ques_Data[r]);
+    //                i++;
+    //            }
+    //            else if (checkr.Contains(r) == false)
+    //            {
+    //                checkr.Add(r);
+    //                quesAns.Add(c1.Ques_Data[r]);
+    //                i++;
+    //            }
+    //            else
+    //            {
+    //                print("same random no is regenerated again");
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        print("No of required questions is greater than no of questions present");
+    //    }
+    //}
+
     //public void StartQuestionRoutine(Course c, int n, float t)
     //{
-        //StartCoroutine(QuestionRoutin(c, n, t));
+    //StartCoroutine(QuestionRoutin(c, n, t));
     //}
 
     string amil;
@@ -112,10 +170,10 @@ public class QnA_json : MonoBehaviour
     //for changing questions
     IEnumerator QuestionRoutin(List<QnA> qA, float t)
     {
-        while(qCounter < qA.Count)
+        while (qCounter < qA.Count)
         {
 
-            Question.text = qA[qCounter].Quesion;
+            Question.text = qA[qCounter].Question;
             RandomButton(qA, qCounter);
 
             amil = qA[qCounter].Answer;
@@ -133,13 +191,12 @@ public class QnA_json : MonoBehaviour
         }
     }
 
-
     public void RandomButton(List<QnA> qA, int qCounter)
     {
-        while (count <= b.Length -1)
+        while (count <= b.Length - 1)
         {
             rand_gen = UnityEngine.Random.Range(0, 4);
-            
+
             if (count == 0)
             {
                 check.Add(rand_gen);
@@ -148,7 +205,7 @@ public class QnA_json : MonoBehaviour
                 count++;
             }
 
-            else if(check.Contains(rand_gen) == false)
+            else if (check.Contains(rand_gen) == false)
             {
                 check.Add(rand_gen);
                 //b[count].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[rand_gen];
@@ -160,7 +217,7 @@ public class QnA_json : MonoBehaviour
                 //Debug.Log("masla ha");
             }
         }
-       
+
         if (count == b.Length)
         {
             count = 0;
@@ -168,7 +225,7 @@ public class QnA_json : MonoBehaviour
         }
 
         //for hardcoded buttons
-        
+
         //for (int i = 0; i < b.Length; i++)
         //{
         //    b[i].GetComponentInChildren<Text>().text = c.Ques_Data[qCounter].options[i];
@@ -221,16 +278,26 @@ public class QnA_json : MonoBehaviour
     [Serializable]
     public class QnA
     {
-        public string Quesion;
+        public string Question;
         public string Answer;
         public string[] options;
+    }
+
+    [Serializable]
+    public class Catagory
+    {
+        public string category_name;
+        public string No_Of_Ques;
+        public QnA[] Ques_Data;
     }
 
     [Serializable]
     public class Course
     {
         public string CourseName;
-        public string No_Of_Ques;
-        public QnA[] Ques_Data;
+        public string Total_no_Of_Ques;
+        public string no_of_categories;
+        public Catagory[] categories;
     }
 }
+
