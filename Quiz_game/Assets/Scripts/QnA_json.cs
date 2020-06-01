@@ -45,24 +45,26 @@ public class QnA_json : MonoBehaviour
         Tn = int.Parse(c1.Total_no_Of_Ques);
         Nc = int.Parse(c1.no_of_categories);
 
-        Catagory choosen_cat = SearchForCatagory(c1, Nc, "Chemistry");
-        if(choosen_cat != null)
-        {
-            LoadQuestions(choosen_cat, Tn, 2);
-        }
+        //Catagory choosen_cat = SearchForCatagory(c1, Nc, "Chemistry");
+        //if(choosen_cat != null)
+        //{
+        //    LoadQuestions(choosen_cat, Tn, 2);
+        //}
 
         //LoadQuestions(c1, Tn, 3);
 
-        for (int j = 0; j < 2; j++)
-        {
-            print(quesAns[j].Question);
-            print(quesAns[j].Answer);
-            print(quesAns[j].options[j]);
-        }
+        //for (int j = 0; j < 2; j++)
+        //{
+        //    print(quesAns[j].Question);
+        //    print(quesAns[j].Answer);
+        //    print(quesAns[j].options[j]);
+        //}
 
         //StartQuestionRoutine(c1, n, time_1);
         Invoke("disableWelcome", 3.0f);
-        StartCoroutine(QuestionRoutin(quesAns, time_1));
+        Basic("Chemistry");
+
+        //StartCoroutine(QuestionRoutin(quesAns, time_1));
 
     }
 
@@ -73,6 +75,16 @@ public class QnA_json : MonoBehaviour
         //print("here it is: " + myJSON);
         Course c = JsonUtility.FromJson<Course>(json);
         return c;
+    }
+
+    public void Basic(string cat)
+    {
+        Catagory choosen_cat = SearchForCatagory(c1, Nc, cat);
+        if (choosen_cat != null)
+        {
+            LoadQuestions(choosen_cat, Tn, 2);
+            StartCoroutine(QuestionRoutin(quesAns, time_1));
+        }
     }
 
     public Catagory SearchForCatagory(Course c, int no_of_categories, string cat)
@@ -126,6 +138,7 @@ public class QnA_json : MonoBehaviour
         }
     }
 
+    int ii = 0;
 
     //public void LoadQuestions(Course c1, int n, int no_Of_ques)
     //{
@@ -188,6 +201,21 @@ public class QnA_json : MonoBehaviour
 
             //qCounter++;
             //yield return new WaitForSeconds(t);
+        }
+        ii++;
+
+        if(qCounter >= quesAns.Count && ii <= Nc)
+        {
+            qCounter = 0;
+            quesAns.Clear();
+            checkr.Clear();
+            Debug.Log("coming");
+            Basic("Astronomy");
+            ii++;
+        }
+        else
+        {
+            Debug.Log("finished");
         }
     }
 
